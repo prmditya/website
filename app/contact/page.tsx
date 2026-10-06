@@ -55,34 +55,34 @@ const contacts = [
 export default function ContactPage() {
   return (
     <main>
-      <section className="contact-section">
+      <section className="min-h-[100svh] flex items-start pt-[calc(var(--nav-height)+3rem)]">
         <div className="container">
           {/* Header */}
           <motion.div
-            className="contact-header"
+            className="flex flex-col gap-2.5 max-w-[520px] mb-12"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className="section-label">// reach me</p>
             <h1 className="section-title">
-              Let&apos;s talk<span style={{ color: "var(--accent)" }}>.</span>
+              Let&apos;s talk<span className="text-[var(--accent)]">.</span>
             </h1>
-            <p className="contact-desc">
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mt-1">
               Whether you have a project in mind, a question, or just want to
               say hi — my inbox is open. Pick your preferred channel below.
             </p>
           </motion.div>
 
           {/* Contact cards grid */}
-          <div className="contact-grid">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {contacts.map((c, i) => (
               <motion.a
                 key={c.id}
                 href={c.href}
                 target={c.href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
-                className="contact-card glass glass-hover"
+                className="group relative flex flex-col gap-4 p-6 rounded-[var(--radius-lg)] text-[var(--text-primary)] no-underline cursor-pointer glass glass-hover transition-all duration-250 ease-out"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -93,45 +93,40 @@ export default function ContactPage() {
                 whileHover={{ y: -4 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="contact-card__icon">{c.icon}</div>
-                <div className="contact-card__body">
-                  <p className="contact-card__label mono">{c.label}</p>
-                  <p className="contact-card__handle">{c.handle}</p>
-                  <p className="contact-card__desc mono">{c.desc}</p>
+                <div className="text-[var(--accent)] opacity-85">{c.icon}</div>
+                <div className="flex flex-col gap-1">
+                  <p className="mono text-[11px] text-[var(--text-muted)] tracking-widest uppercase">
+                    {c.label}
+                  </p>
+                  <p className="font-[var(--font-sans)] text-base font-bold -tracking-[0.01em]">
+                    {c.handle}
+                  </p>
+                  <p className="mono text-[11.5px] text-[var(--text-muted)] tracking-wider mt-0.5">
+                    {c.desc}
+                  </p>
                 </div>
-                <div className="contact-card__arrow">↗</div>
+                <div className="absolute top-5 right-5 text-sm text-[var(--text-muted)] transition-all duration-200 group-hover:text-[var(--accent)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  ↗
+                </div>
               </motion.a>
             ))}
           </div>
 
           {/* Optional email note */}
           <motion.div
-            className="contact-note glass"
+            className="flex flex-col gap-2 p-5 sm:p-6 rounded-[var(--radius-md)] glass"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span
-              className="mono"
-              style={{ color: "var(--accent)", fontSize: "0.8rem" }}
-            >
+            <span className="mono text-[var(--accent)] text-xs">
               // prefer email?
             </span>
-            <p
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "0.85rem",
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="text-[var(--text-secondary)] text-[13.5px] leading-relaxed">
               Send me a message at{" "}
               <a
                 href="mailto:t.paramaditya@gmail.com"
-                style={{
-                  color: "var(--accent)",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                }}
+                className="text-[var(--accent)] underline underline-offset-[3px]"
               >
                 t.paramaditya@gmail.com
               </a>{" "}
@@ -144,7 +139,7 @@ export default function ContactPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.7 }}
-            style={{ marginTop: "2rem" }}
+            className="mt-8"
           >
             <Link href="/" className="btn btn-ghost">
               ← back home
@@ -152,108 +147,6 @@ export default function ContactPage() {
           </motion.div>
         </div>
       </section>
-
-      <style>{`
-        .contact-section {
-          min-height: 100svh;
-          display: flex;
-          align-items: flex-start;
-          padding-top: calc(var(--nav-height) + 3rem);
-        }
-
-        .contact-header {
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-          max-width: 520px;
-          margin-bottom: 3rem;
-        }
-
-        .contact-desc {
-          font-size: 0.9rem;
-          color: var(--text-secondary);
-          line-height: 1.75;
-          margin-top: 0.25rem;
-        }
-
-        .contact-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-          margin-bottom: 2rem;
-        }
-
-        .contact-card {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          padding: 1.5rem;
-          border-radius: var(--radius-lg);
-          position: relative;
-          color: var(--text-primary);
-          text-decoration: none;
-          cursor: pointer;
-          transition:
-            background 0.25s var(--ease-out),
-            border-color 0.25s var(--ease-out),
-            transform 0.25s var(--ease-out),
-            box-shadow 0.25s var(--ease-out);
-        }
-
-        .contact-card__icon {
-          color: var(--accent);
-          opacity: 0.85;
-        }
-
-        .contact-card__body {
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-        }
-
-        .contact-card__label {
-          font-size: 0.68rem;
-          color: var(--text-muted);
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .contact-card__handle {
-          font-family: var(--font-sans);
-          font-size: 1rem;
-          font-weight: 700;
-          letter-spacing: -0.01em;
-        }
-
-        .contact-card__desc {
-          font-size: 0.72rem;
-          color: var(--text-muted);
-          letter-spacing: 0.03em;
-          margin-top: 0.1rem;
-        }
-
-        .contact-card__arrow {
-          position: absolute;
-          top: 1.25rem;
-          right: 1.25rem;
-          font-size: 0.9rem;
-          color: var(--text-muted);
-          transition: color 0.2s, transform 0.2s;
-        }
-
-        .contact-card:hover .contact-card__arrow {
-          color: var(--accent);
-          transform: translate(2px, -2px);
-        }
-
-        .contact-note {
-          padding: 1.25rem 1.5rem;
-          border-radius: var(--radius-md);
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-      `}</style>
     </main>
   );
 }
