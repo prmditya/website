@@ -17,7 +17,6 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
     : "project";
   const fig = String(project.id).padStart(2, "0");
 
-  // Fall back to NO SIGNAL screen if image fails or is missing
   const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
@@ -71,7 +70,17 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               rel="noopener noreferrer"
               className="pd-btn pd-btn--github mono"
             >
-              <span>🐱</span> github
+              {/* SVG Official GitHub Logo */}
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+              <span>github</span>
             </a>
           )}
           {liveLink && (
@@ -81,7 +90,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               rel="noopener noreferrer"
               className="pd-btn pd-btn--live mono"
             >
-              live ↗
+              <span>live demo</span> ↗
             </a>
           )}
         </div>
@@ -96,7 +105,8 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               <i />
               <i />
             </span>
-            <span className="pd-path">~/projects/{slug}/preview</span>
+            <span className="pd-path">~/projects/{slug}</span>
+            <span className="pd-fig-tag">FIG. {fig}</span>
           </div>
 
           <div className="pd-screen">
@@ -118,34 +128,28 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                 </small>
               </div>
             )}
-            <div className="pd-scanlines" />
           </div>
         </div>
-
-        <figcaption className="pd-caption mono">
-          fig. {fig} — {project.title}
-        </figcaption>
       </figure>
 
       <style jsx>{`
         :global(.pd-card) {
           position: relative;
           display: grid;
-          grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-          gap: 3rem;
+          grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+          gap: 2.5rem;
           width: 100%;
-          padding: 2.75rem;
+          padding: 2.5rem;
           box-sizing: border-box;
           align-items: center;
           border-radius: 1.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           background-color: #0b0d12;
           background-image: radial-gradient(
-            rgba(255, 255, 255, 0.045) 1px,
+            rgba(255, 255, 255, 0.04) 1px,
             transparent 1px
           );
           background-size: 18px 18px;
-          overflow: visible;
         }
 
         .pd-content {
@@ -236,7 +240,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         .pd-btn {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
+          gap: 0.5rem;
           padding: 0.55rem 1.25rem;
           border-radius: 9999px;
           font-size: 0.8rem;
@@ -252,13 +256,14 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         }
         .pd-btn--github:hover {
           background: rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.25);
         }
 
         .pd-btn--live {
           background: #facc15;
           color: #0d1117;
           font-weight: 600;
-          box-shadow: 0 4px 20px rgba(250, 204, 21, 0.3);
+          box-shadow: 0 4px 20px rgba(250, 204, 21, 0.25);
         }
         .pd-btn--live:hover {
           background: #eab308;
@@ -268,53 +273,57 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         /* Overlapping terminal window */
         .pd-figure {
           position: relative;
-          margin: -2.5rem -1.5rem -1rem 0;
+          margin: 0;
           z-index: 2;
         }
 
         .pd-window {
           position: relative;
-          border-radius: 0.9rem;
+          border-radius: 0.85rem;
           background: #0f1219;
           border: 1px solid rgba(255, 255, 255, 0.12);
           overflow: hidden;
-          transform: rotate(1.6deg);
-          transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 35px 70px -25px rgba(0, 0, 0, 0.95);
+          box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.8);
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
         }
 
         .pd-figure::before {
           content: "";
           position: absolute;
-          inset: 0;
-          border: 1px dashed rgba(250, 204, 21, 0.45);
-          border-radius: 0.9rem;
-          transform: translate(14px, 14px) rotate(1.6deg);
-          transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+          inset: -6px;
+          border: 1px dashed rgba(250, 204, 21, 0.3);
+          border-radius: 1.1rem;
+          pointer-events: none;
           z-index: -1;
+          transition: border-color 0.3s ease;
         }
 
         .pd-figure:hover .pd-window {
-          transform: rotate(0deg) translateY(-4px);
+          transform: translateY(-3px);
+          box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9);
         }
+
         .pd-figure:hover::before {
-          transform: translate(10px, 10px) rotate(0deg);
+          border-color: rgba(250, 204, 21, 0.6);
         }
 
         .pd-bar {
           display: flex;
           align-items: center;
-          gap: 0.9rem;
-          padding: 0.65rem 0.9rem;
-          background: #151922;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-          font-size: 0.68rem;
+          justify-content: space-between;
+          padding: 0.6rem 0.9rem;
+          background: #141822;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 0.7rem;
           color: #64748b;
         }
 
         .pd-dots {
           display: flex;
           gap: 0.4rem;
+          align-items: center;
         }
         .pd-dots i {
           width: 9px;
@@ -336,11 +345,26 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          color: #94a3b8;
+          font-size: 0.68rem;
+          margin-left: 0.5rem;
+          margin-right: auto;
+        }
+
+        .pd-fig-tag {
+          font-size: 0.62rem;
+          letter-spacing: 0.08em;
+          color: #facc15;
+          background: rgba(250, 204, 21, 0.1);
+          padding: 0.15rem 0.5rem;
+          border-radius: 0.3rem;
+          border: 1px solid rgba(250, 204, 21, 0.2);
+          flex-shrink: 0;
         }
 
         .pd-screen {
           position: relative;
-          aspect-ratio: 16 / 11;
+          aspect-ratio: 16 / 10;
           background: #0a0c10;
           overflow: hidden;
         }
@@ -348,19 +372,11 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         .pd-screen :global(.pd-screen-img) {
           object-fit: cover;
           object-position: top;
+          transition: transform 0.4s ease;
         }
 
-        .pd-scanlines {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: repeating-linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 0,
-            rgba(0, 0, 0, 0) 2px,
-            rgba(0, 0, 0, 0.16) 3px
-          );
-          box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.55);
+        .pd-figure:hover .pd-screen :global(.pd-screen-img) {
+          transform: scale(1.02);
         }
 
         .pd-nosignal {
@@ -391,31 +407,12 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
           }
         }
 
-        .pd-caption {
-          margin-top: 1.4rem;
-          text-align: right;
-          font-size: 0.65rem;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #475569;
-        }
-
         @media (max-width: 900px) {
           :global(.pd-card) {
             grid-template-columns: minmax(0, 1fr);
             width: 100%;
             gap: 2rem;
             padding: 1.5rem;
-          }
-          .pd-figure {
-            margin: 0;
-          }
-          .pd-window,
-          .pd-figure:hover .pd-window {
-            transform: none;
-          }
-          .pd-figure::before {
-            display: none;
           }
           .pd-title {
             font-size: 1.5rem;

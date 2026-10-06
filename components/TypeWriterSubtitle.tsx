@@ -51,7 +51,7 @@ export default function TypewriterSubtitle() {
 
   return (
     <p className="hero-sub mono inline-flex items-center">
-      <span className="mr-2">&gt; </span>
+      <span className="mr-2">&gt;⠀</span>
       <span>{displayText}</span>
       <motion.span
         animate={{ opacity: [1, 0] }}

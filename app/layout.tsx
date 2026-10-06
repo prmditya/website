@@ -17,10 +17,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "thoriq · portfolio",
+  title: "thoriq",
   description: "Personal portfolio of Thoriq — developer, builder, tinkerer.",
   openGraph: {
-    title: "thoriq · portfolio",
+    title: "thoriq",
     description: "Personal portfolio of Thoriq — developer, builder, tinkerer.",
     type: "website",
   },

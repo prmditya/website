@@ -56,15 +56,15 @@ export default function HomePage() {
   const heroRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
 
-  // Hero Parallax Scroll
+  // Hero Parallax & Scale-down Scroll Effect
   const { scrollYProgress: heroScroll } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
 
+  const heroScale = useTransform(heroScroll, [0, 1], [1, 0.92]);
+  const heroOpacity = useTransform(heroScroll, [0, 0.8], [1, 0.3]);
   const heroGridY = useTransform(heroScroll, [0, 1], ["0%", "25%"]);
-  const heroContentY = useTransform(heroScroll, [0, 1], ["0%", "-15%"]);
-  const heroOpacity = useTransform(heroScroll, [0, 0.85], [1, 0]);
   const cardsY = useTransform(heroScroll, [0, 1], ["0px", "-60px"]);
 
   // Footer Parallax Scroll
@@ -83,24 +83,24 @@ export default function HomePage() {
     { rotate: -2, y: 220, x: 0, zIndex: 1 },
   ];
 
-  // Duplikasi daftar project agar animasi marquee carousel berjalan smooth tanpa jeda
   const carouselProjects = [...projects, ...projects];
 
   return (
-    <main>
+    <main className="main-wrapper">
       {/* ══════════════════════════════════
-          HERO WITH PARALLAX & HUD CARDS
-          ══════════════════════════════════ */}
-      <section ref={heroRef} className="hero">
+          HERO SECTION (STICKY STACKING)
+          ══════════════════════════════ */}
+      <motion.section
+        ref={heroRef}
+        style={{ scale: heroScale, opacity: heroOpacity }}
+        className="hero-sticky-container"
+      >
         <motion.div style={{ y: heroGridY }} className="grid-bg">
           <div className="grid-pattern" />
         </motion.div>
         <div className="grid-mask" />
 
-        <motion.div
-          style={{ y: heroContentY, opacity: heroOpacity }}
-          className="container hero-container"
-        >
+        <div className="container hero-container">
           <div className="hero-content">
             <motion.div {...stagger(0)}>
               <div className="hero-badge glass">
@@ -229,284 +229,322 @@ export default function HomePage() {
               );
             })}
           </motion.div>
-        </motion.div>
-      </section>
+        </div>
+      </motion.section>
 
       {/* ══════════════════════════════════
-          INFINITE PINTEREST CAROUSEL
-          ══════════════════════════════════ */}
-      <section id="projects" className="pinterest-gallery">
-        <div className="container">
-          <motion.div
-            className="gallery-header"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="gallery-header__top">
-              <span className="gallery-tag mono">01 // EXHIBITION</span>
-              <span className="gallery-count mono">
-                [{projects.length} WORKS · INFINITE STREAM]
-              </span>
-            </div>
-            <h2 className="gallery-title">Selected Works</h2>
-          </motion.div>
-        </div>
+          CONTENT OVERLAY WRAPPER (Z-INDEX HIGH)
+          ══════════════════════════════ */}
+      <div className="content-reveal-layer">
+        {/* INFINITE PINTEREST CAROUSEL */}
+        <section id="projects" className="pinterest-gallery">
+          <div className="container">
+            <motion.div
+              className="gallery-header"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="gallery-header__top">
+                <span className="gallery-tag mono">01 // EXHIBITION</span>
+                <span className="gallery-count mono">
+                  [{projects.length} WORKS · INFINITE STREAM]
+                </span>
+              </div>
+              <h2 className="gallery-title">Selected Works</h2>
+            </motion.div>
+          </div>
 
-        {/* Carousel Container dengan Hover-Pause */}
-        <div className="infinite-carousel-wrap">
-          <div className="infinite-carousel-track">
-            {carouselProjects.map((project, idx) => {
-              const originalIndex = idx % projects.length;
-              const isActive = project.id === activeProjectId;
-              return (
-                <div
-                  key={`${project.id}-${idx}`}
-                  className={`pin-card ${isActive ? "pin-card--active" : ""}`}
-                  onClick={() => setActiveProjectId(project.id)}
-                >
-                  <div className="pin-card__frame">
-                    <Image
-                      src={project.image || "/assets/placeholder.jpg"}
-                      alt={project.title}
-                      width={400}
-                      height={500}
-                      className="pin-card__img"
-                    />
-                    <div className="pin-card__overlay">
-                      <span className="pin-card__index mono">
-                        No. 0{originalIndex + 1}
-                      </span>
-                      <span className="pin-card__arrow mono">↗</span>
-                    </div>
-                  </div>
-
-                  <div className="pin-card__caption">
-                    <div className="pin-card__meta">
-                      <h3 className="pin-card__title">{project.title}</h3>
-                      {project.category && (
-                        <span className="pin-card__cat mono">
-                          {project.category}
+          <div className="infinite-carousel-wrap">
+            <div className="infinite-carousel-track">
+              {carouselProjects.map((project, idx) => {
+                const originalIndex = idx % projects.length;
+                const isActive = project.id === activeProjectId;
+                return (
+                  <div
+                    key={`${project.id}-${idx}`}
+                    className={`pin-card ${isActive ? "pin-card--active" : ""}`}
+                    onClick={() => setActiveProjectId(project.id)}
+                  >
+                    <div className="pin-card__frame">
+                      <Image
+                        src={project.image || "/assets/placeholder.jpg"}
+                        alt={project.title}
+                        width={400}
+                        height={500}
+                        className="pin-card__img"
+                      />
+                      <div className="pin-card__overlay">
+                        <span className="pin-card__index mono">
+                          No. 0{originalIndex + 1}
                         </span>
-                      )}
+                        <span className="pin-card__arrow mono">↗</span>
+                      </div>
+                    </div>
+
+                    <div className="pin-card__caption">
+                      <div className="pin-card__meta">
+                        <h3 className="pin-card__title">{project.title}</h3>
+                        {project.category && (
+                          <span className="pin-card__cat mono">
+                            {project.category}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Plakat Detail Karya Terpilih */}
-        <div className="container">
-          {activeProjectId &&
-            (() => {
-              const currentIndex = projects.findIndex(
-                (p) => p.id === activeProjectId,
-              );
-              const activeProject = projects[currentIndex] || projects[0];
-
-              const handlePrev = () => {
-                const prevIdx =
-                  (currentIndex - 1 + projects.length) % projects.length;
-                setActiveProjectId(projects[prevIdx].id);
-              };
-
-              const handleNext = () => {
-                const nextIdx = (currentIndex + 1) % projects.length;
-                setActiveProjectId(projects[nextIdx].id);
-              };
-
-              return (
-                <motion.div
-                  key={activeProjectId}
-                  className="pin-detail-wrapper"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {/* Header Bar dengan Tombol Navigasi Next/Prev */}
-                  <div className="pin-detail-bar mono">
-                    <span>// EXHIBIT DETAILS — NO. 0{currentIndex + 1}</span>
-
-                    <div className="pin-detail-nav">
-                      <button
-                        onClick={handlePrev}
-                        className="nav-btn mono"
-                        aria-label="Previous project"
-                      >
-                        ← Prev
-                      </button>
-                      <span className="nav-divider">/</span>
-                      <button
-                        onClick={handleNext}
-                        className="nav-btn mono"
-                        aria-label="Next project"
-                      >
-                        Next →
-                      </button>
-                    </div>
-                  </div>
-
-                  <ProjectDetail project={activeProject} />
-                </motion.div>
-              );
-            })()}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          PRE-FOOTER CTA SECTION (WITH SURABAYA TIME)
-          ══════════════════════════════════ */}
-      <section className="cta-section">
-        <div className="container">
-          <motion.div
-            className="cta-eyebrow-row"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="cta-step mono">02 // NEXT STEP</span>
-            <div className="cta-divider-line" />
-            <span className="cta-availability mono">AVAILABLE FOR Q4/Q1</span>
-          </motion.div>
-
-          <div className="cta-main">
-            <motion.div
-              className="cta-text-wrapper"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                duration: 0.7,
-                delay: 0.1,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              <span className="cta-subheading mono">// DONE WITH LOOKING?</span>
-              <h2 className="cta-headline">
-                Let’s start <br />
-                <span className="cta-headline__accent">building together.</span>
-              </h2>
-              <p className="cta-bio mono">
-                Have a project in mind, an idea to refine, or just want to
-                discuss software craft? Drop a line and let’s shape something
-                exceptional.
-              </p>
-            </motion.div>
-
-            <motion.div
-              className="cta-card glass"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                duration: 0.75,
-                delay: 0.2,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              {/* Header Card dengan Live Surabaya Clock */}
-              <div className="cta-card__header mono">
-                <span className="cta-card__time-badge">
-                  <span
-                    className={`cta-card__dot ${
-                      isBusinessHours
-                        ? "cta-card__dot--active"
-                        : "cta-card__dot--idle"
-                    }`}
-                  />
-                  <span>
-                    SURABAYA, ID (UTC+7):{" "}
-                    <strong className="cta-card__clock">
-                      {surabayaTime || "--:--:--"}
-                    </strong>
-                  </span>
-                </span>
-              </div>
-
-              <div className="cta-card__body">
-                <p className="cta-card__prompt">
-                  {isBusinessHours
-                    ? "Currently awake & active for inquiries"
-                    : "Currently resting, but drop a line anytime!"}
-                </p>
-                <a
-                  href="mailto:hello@thoriq.dev"
-                  className="cta-email-link mono"
-                >
-                  hello@thoriq.dev <span className="cta-email-arrow">↗</span>
-                </a>
-              </div>
-
-              <div className="cta-card__footer">
-                <Link href="/contact" className="btn btn-primary cta-btn">
-                  contact me ↓
-                </Link>
-                <span className="cta-response-time mono">
-                  avg response: &lt; 24h
-                </span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════
-          FOOTER WITH PARALLAX & GRID BG
-          ══════════════════════════════════ */}
-      <footer ref={footerRef} className="site-footer">
-        <motion.div style={{ y: footerGridY }} className="grid-bg">
-          <div className="grid-pattern" />
-        </motion.div>
-        <div className="grid-mask" />
-
-        <motion.div
-          style={{ y: footerContentY }}
-          className="container footer-content"
-        >
-          <div className="footer-inner">
-            <div className="footer-left">
-              <Image
-                src="/assets/logo-white.png"
-                alt="Ditya Logo"
-                width={69.5}
-                height={30}
-                sizes="100vw"
-                className="h-auto"
-              />
-              <p className="footer-copy mono">
-                © {new Date().getFullYear()} · built with next.js &amp; framer
-                motion
-              </p>
+                );
+              })}
             </div>
-            <div className="footer-links">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-link mono"
+          </div>
+
+          <div className="container">
+            {activeProjectId &&
+              (() => {
+                const currentIndex = projects.findIndex(
+                  (p) => p.id === activeProjectId,
+                );
+                const activeProject = projects[currentIndex] || projects[0];
+
+                const handlePrev = () => {
+                  const prevIdx =
+                    (currentIndex - 1 + projects.length) % projects.length;
+                  setActiveProjectId(projects[prevIdx].id);
+                };
+
+                const handleNext = () => {
+                  const nextIdx = (currentIndex + 1) % projects.length;
+                  setActiveProjectId(projects[nextIdx].id);
+                };
+
+                return (
+                  <motion.div
+                    key={activeProjectId}
+                    className="pin-detail-wrapper"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <div className="pin-detail-bar mono">
+                      <span>// EXHIBIT DETAILS — NO. 0{currentIndex + 1}</span>
+
+                      <div className="pin-detail-nav">
+                        <button
+                          onClick={handlePrev}
+                          className="nav-btn mono"
+                          aria-label="Previous project"
+                        >
+                          ← Prev
+                        </button>
+                        <span className="nav-divider">/</span>
+                        <button
+                          onClick={handleNext}
+                          className="nav-btn mono"
+                          aria-label="Next project"
+                        >
+                          Next →
+                        </button>
+                      </div>
+                    </div>
+
+                    <ProjectDetail project={activeProject} />
+                  </motion.div>
+                );
+              })()}
+          </div>
+        </section>
+
+        {/* PRE-FOOTER CTA SECTION */}
+        <section className="cta-section">
+          <div className="container">
+            <motion.div
+              className="cta-eyebrow-row"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span className="cta-step mono">02 // NEXT STEP</span>
+              <div className="cta-divider-line" />
+              <span className="cta-availability mono">AVAILABLE FOR Q4/Q1</span>
+            </motion.div>
+
+            <div className="cta-main">
+              <motion.div
+                className="cta-text-wrapper"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
               >
-                github ↗
-              </a>
-              <a href="mailto:hello@thoriq.dev" className="footer-link mono">
-                email ↗
-              </a>
-              <Link href="/contact" className="footer-link mono">
-                contact ↗
-              </Link>
+                <span className="cta-subheading mono">
+                  // DONE WITH LOOKING?
+                </span>
+                <h2 className="cta-headline">
+                  Let’s start <br />
+                  <span className="cta-headline__accent">
+                    building together.
+                  </span>
+                </h2>
+                <p className="cta-bio mono">
+                  Have a project in mind, an idea to refine, or just want to
+                  discuss software craft? Drop a line and let’s shape something
+                  exceptional.
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="cta-card glass"
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.75,
+                  delay: 0.2,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <div className="cta-card__header mono">
+                  <span className="cta-card__time-badge">
+                    <span
+                      className={`cta-card__dot ${
+                        isBusinessHours
+                          ? "cta-card__dot--active"
+                          : "cta-card__dot--idle"
+                      }`}
+                    />
+                    <span>
+                      SURABAYA, ID (UTC+7):{" "}
+                      <strong className="cta-card__clock">
+                        {surabayaTime || "--:--:--"}
+                      </strong>
+                    </span>
+                  </span>
+                </div>
+
+                <div className="cta-card__body">
+                  <p className="cta-card__prompt">
+                    {isBusinessHours
+                      ? "Currently awake & active for inquiries"
+                      : "Currently resting, but drop a line anytime!"}
+                  </p>
+                  <a
+                    href="mailto:t.paramaditya@gmail.com"
+                    className="cta-email-link mono"
+                  >
+                    t.paramaditya@gmail.com{" "}
+                    <span className="cta-email-arrow">↗</span>
+                  </a>
+                </div>
+
+                <div className="cta-card__footer">
+                  <Link href="/contact" className="btn btn-primary cta-btn">
+                    contact me ↓
+                  </Link>
+                  <span className="cta-response-time mono">
+                    avg response: &lt; 24h
+                  </span>
+                </div>
+              </motion.div>
             </div>
           </div>
-          <div className="footer-line" />
-          <p className="footer-tagline mono">
-            // making the web a little less boring, one commit at a time.
-          </p>
-        </motion.div>
-      </footer>
+        </section>
+
+        {/* FOOTER */}
+        <footer ref={footerRef} className="site-footer">
+          <motion.div style={{ y: footerGridY }} className="grid-bg">
+            <div className="grid-pattern" />
+          </motion.div>
+          <div className="grid-mask" />
+
+          <motion.div
+            style={{ y: footerContentY }}
+            className="container footer-content"
+          >
+            <div className="footer-inner">
+              <div className="footer-left">
+                <Image
+                  src="/assets/logo-white.png"
+                  alt="Ditya Logo"
+                  width={69.5}
+                  height={30}
+                  sizes="100vw"
+                  className="h-auto"
+                />
+              </div>
+              <div className="footer-links">
+                <a
+                  href="https://github.com/prmditya"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-link mono"
+                >
+                  github ↗
+                </a>
+                <a
+                  href="mailto:t.paramaditya@gmail.com"
+                  className="footer-link mono"
+                >
+                  email ↗
+                </a>
+                <Link href="/contact" className="footer-link mono">
+                  contact ↗
+                </Link>
+              </div>
+            </div>
+            <div className="footer-line" />
+
+            <p className="footer-copy mono">
+              © {new Date().getFullYear()} Ditya
+            </p>
+          </motion.div>
+        </footer>
+      </div>
 
       <style>{`
+        .main-wrapper {
+          position: relative;
+          background: var(--bg-primary, #06070a);
+        }
+
+        /* ── Sticky Stacking reveal styles ── */
+        .hero-sticky-container {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          z-index: 1;
+        }
+
+        .hero {
+          position: relative;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          padding-top: calc(var(--nav-height, 80px) + 2rem);
+          padding-bottom: 2rem;
+        }
+
+        .hero-sticky {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          height: 100vh;
+          will-change: transform, opacity;
+        }
+
+        .content-reveal-layer {
+          position: relative;
+          z-index: 10;
+          background: var(--bg-primary, #06070a);
+          box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.9);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
         /* ── Grid & Mask Styles ── */
         .grid-bg {
           position: absolute;
@@ -818,47 +856,47 @@ export default function HomePage() {
           animation-play-state: paused;
         }
 
-.pin-detail-wrapper {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
+        .pin-detail-wrapper {
+          margin-top: 3rem;
+          padding-top: 2rem;
+          border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
 
-.pin-detail-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.72rem;
-  color: var(--accent, #facc15);
-  letter-spacing: 0.08em;
-  margin-bottom: 1.5rem;
-}
+        .pin-detail-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.72rem;
+          color: var(--accent, #facc15);
+          letter-spacing: 0.08em;
+          margin-bottom: 1.5rem;
+        }
 
-.pin-detail-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
+        .pin-detail-nav {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
 
-.nav-btn {
-  background: transparent;
-  border: none;
-  color: var(--accent, #facc15);
-  cursor: pointer;
-  font-size: 0.72rem;
-  letter-spacing: 0.05em;
-  opacity: 0.8;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
+        .nav-btn {
+          background: transparent;
+          border: none;
+          color: var(--accent, #facc15);
+          cursor: pointer;
+          font-size: 0.72rem;
+          letter-spacing: 0.05em;
+          opacity: 0.8;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
 
-.nav-btn:hover {
-  opacity: 1;
-  transform: translateY(-1px);
-}
+        .nav-btn:hover {
+          opacity: 1;
+          transform: translateY(-1px);
+        }
 
-.nav-divider {
-  color: rgba(255, 255, 255, 0.2);
-}
+        .nav-divider {
+          color: rgba(255, 255, 255, 0.2);
+        }
 
         @keyframes marquee {
           0% {
@@ -965,19 +1003,6 @@ export default function HomePage() {
           color: var(--text-muted, #64748b);
           letter-spacing: 0.05em;
           text-transform: uppercase;
-        }
-
-        .pin-detail-wrapper {
-          margin-top: 3rem;
-          padding-top: 2rem;
-          border-top: 1px dashed rgba(255, 255, 255, 0.1);
-        }
-
-        .pin-detail-bar {
-          font-size: 0.68rem;
-          color: var(--accent, #facc15);
-          letter-spacing: 0.08em;
-          margin-bottom: 1.5rem;
         }
 
         /* ── Pre-Footer CTA with Live Surabaya Clock ── */
@@ -1164,6 +1189,11 @@ export default function HomePage() {
         }
 
         @media (max-width: 992px) {
+          .hero-sticky {
+            height: auto;
+            position: relative;
+          }
+
           .hero-container {
             grid-template-columns: 1fr;
             gap: 2.5rem;

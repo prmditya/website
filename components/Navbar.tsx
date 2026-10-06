@@ -22,7 +22,9 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar-wrapper">
+      <div
+        className={`navbar-wrapper${scrolled ? " navbar-wrapper--scrolled" : ""}`}
+      >
         <motion.header
           className={`navbar${scrolled ? " navbar--scrolled" : ""}`}
           initial={{ y: -80, opacity: 0 }}
@@ -46,16 +48,23 @@ export default function Navbar() {
 
             {/* Desktop Nav */}
             <nav className="navbar__links">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="navbar__link mono"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link href="/contact" className="btn btn-ghost navbar__cta mono">
+              <div
+                className={`navbar__nav-items${scrolled ? " navbar__nav-items--scrolled" : ""}`}
+              >
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="navbar__link mono"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href="/contact"
+                className={`btn navbar__cta mono${scrolled ? " navbar__cta--scrolled" : ""}`}
+              >
                 reach me ↗
               </Link>
             </nav>
@@ -95,7 +104,7 @@ export default function Navbar() {
               ))}
               <Link
                 href="/contact"
-                className="mobile-menu__link mono"
+                className="mobile-menu__link mobile-menu__link--cta mono"
                 onClick={() => setMenuOpen(false)}
               >
                 reach me ↗
@@ -117,6 +126,11 @@ export default function Navbar() {
           align-items: center;
           padding: 1rem 1rem 0;
           pointer-events: none;
+          transition: padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar-wrapper--scrolled {
+          padding-top: 0.75rem;
         }
 
         .navbar {
@@ -129,6 +143,8 @@ export default function Navbar() {
           border: 1px solid transparent;
           box-shadow: 0 0 0 transparent;
           transition: 
+            max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
             background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
             border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
@@ -136,7 +152,9 @@ export default function Navbar() {
         }
 
         .navbar--scrolled {
-          background: rgba(13, 16, 23, 0.75);
+          max-width: 500px;
+          padding: 0.4rem 0.6rem;
+          background: rgba(13, 16, 23, 0.82);
           backdrop-filter: blur(20px) saturate(180%);
           -webkit-backdrop-filter: blur(20px) saturate(180%);
           border-color: rgba(255, 255, 255, 0.12);
@@ -160,11 +178,11 @@ export default function Navbar() {
           overflow: hidden;
           background: transparent;
           transition: background-color 0.35s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          flex-shrink: 0;
         }
 
-        /* Yellow circle background when un-scrolled at top */
         .navbar__logo--hero {
-          background-color: #facc15; /* Match your accent yellow hex */
+          background-color: #facc15;
         }
 
         .navbar__logo:hover {
@@ -181,7 +199,22 @@ export default function Navbar() {
         .navbar__links {
           display: flex;
           align-items: center;
+          justify-content: space-between;
+          flex-grow: 1;
+          margin-left: 1rem;
+        }
+
+        .navbar__nav-items {
+          display: flex;
+          align-items: center;
           gap: 0.35rem;
+          margin-left: auto;
+          margin-right: 0.25rem;
+          transition: margin 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar__nav-items--scrolled {
+          margin: 0 auto;
         }
 
         .navbar__link {
@@ -199,19 +232,33 @@ export default function Navbar() {
         }
 
         .navbar__cta {
-          margin-left: 0.25rem;
           padding: 0.45rem 1rem;
           font-size: 0.78rem;
           border-radius: 9999px;
           border: 1px solid rgba(255, 255, 255, 0.12);
           background: rgba(255, 255, 255, 0.04);
           color: var(--text-primary, #f8fafc);
-          transition: background 0.2s, border-color 0.2s, transform 0.2s;
+          font-weight: 500;
+          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+          flex-shrink: 0;
         }
 
         .navbar__cta:hover {
           background: rgba(255, 255, 255, 0.1);
           border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .navbar__cta--scrolled {
+          background: #facc15;
+          color: #0d1017;
+          border-color: #facc15;
+          font-weight: 600;
+        }
+
+        .navbar__cta--scrolled:hover {
+          background: #eab308;
+          border-color: #eab308;
+          box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
         }
 
         .navbar__hamburger {
@@ -240,7 +287,7 @@ export default function Navbar() {
         .mobile-menu {
           pointer-events: auto;
           width: 100%;
-          max-width: 1100px;
+          max-width: 500px;
           margin-top: 0.5rem;
           border-radius: 1.25rem;
           padding: 0.75rem;
@@ -265,9 +312,39 @@ export default function Navbar() {
           background: rgba(255, 255, 255, 0.06);
         }
 
+        .mobile-menu__link--cta {
+          background: #facc15;
+          color: #0d1017;
+          font-weight: 600;
+          text-align: center;
+          margin-top: 0.25rem;
+        }
+
+        .mobile-menu__link--cta:hover {
+          background: #eab308;
+          color: #0d1017;
+        }
+
+        /* Khusus Layar Mobile (< 640px) */
         @media (max-width: 640px) {
-          .navbar__links { display: none; }
-          .navbar__hamburger { display: flex; }
+          .navbar__links {
+            display: none !important;
+          }
+
+          .navbar__hamburger {
+            display: flex !important;
+          }
+
+          .navbar {
+            background: rgba(13, 16, 23, 0.82) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+          }
+
+          .navbar--scrolled {
+            max-width: 100% !important;
+          }
         }
       `}</style>
     </>
