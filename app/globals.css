@@ -1,3 +1,4 @@
+@import "tailwindcss";
 /* ========================================
    DESIGN TOKENS
    ======================================== */
@@ -61,19 +62,6 @@ body {
   color: var(--text-primary);
   line-height: 1.7;
   min-height: 100vh;
-  /* Atmospheric background glows */
-  background-image:
-    radial-gradient(
-      ellipse 70% 45% at 15% -5%,
-      rgba(245, 200, 66, 0.055) 0%,
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 55% 35% at 85% 108%,
-      rgba(139, 92, 246, 0.055) 0%,
-      transparent 60%
-    );
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -146,7 +134,7 @@ svg {
    ======================================== */
 .container {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1200px;
   margin-inline: auto;
   padding-inline: clamp(1.5rem, 6vw, 3rem);
 }
@@ -267,6 +255,166 @@ section {
   border-color: var(--glass-border-hover);
   color: var(--text-primary);
   transform: scale(1.04);
+}
+
+/* ── Pinterest Gallery Layout ── */
+.pinterest-gallery {
+  padding-block: 5rem 3rem;
+  background: var(--bg-primary, #06070a);
+}
+
+.gallery-header {
+  margin-bottom: 2.5rem;
+}
+
+.gallery-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.gallery-tag,
+.gallery-count {
+  font-size: 0.7rem;
+  color: var(--text-muted, #64748b);
+  letter-spacing: 0.08em;
+}
+
+.gallery-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 500;
+  color: var(--text-primary, #f8fafc);
+  letter-spacing: -0.02em;
+}
+
+/* Pinterest Masonry Grid */
+.pinboard {
+  column-count: 3;
+  column-gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .pinboard {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .pinboard {
+    column-count: 1;
+  }
+}
+
+/* Individual Pin Cards */
+.pin-card {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.pin-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+.pin-card--active {
+  border-color: var(--accent, #facc15);
+}
+
+.pin-card__frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #0d1117;
+}
+
+.pin-card__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pin-card:hover .pin-card__img {
+  transform: scale(1.03);
+}
+
+.pin-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6, 7, 10, 0.7) 0%, transparent 40%);
+  opacity: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0.85rem;
+  transition: opacity 0.3s ease;
+}
+
+.pin-card:hover .pin-card__overlay {
+  opacity: 1;
+}
+
+.pin-card__index {
+  font-size: 0.65rem;
+  color: #fff;
+  letter-spacing: 0.05em;
+}
+
+.pin-card__arrow {
+  font-size: 0.8rem;
+  color: var(--accent, #facc15);
+}
+
+/* Minimal Pin Captions */
+.pin-card__caption {
+  padding: 0.85rem 1rem;
+}
+
+.pin-card__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.pin-card__title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary, #f8fafc);
+  letter-spacing: -0.01em;
+}
+
+.pin-card__cat {
+  font-size: 0.62rem;
+  color: var(--text-muted, #64748b);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Selected Detail Plaque */
+.pin-detail-wrapper {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.pin-detail-bar {
+  font-size: 0.68rem;
+  color: var(--accent, #facc15);
+  letter-spacing: 0.08em;
+  margin-bottom: 1.5rem;
 }
 
 /* ========================================

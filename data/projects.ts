@@ -8,6 +8,8 @@ export interface Project {
   live?: string;
   emoji: string;
   year: string;
+  image: string;
+  category?: string;
 }
 
 export const projects: Project[] = [
@@ -23,6 +25,7 @@ export const projects: Project[] = [
     live: "https://example.com",
     emoji: "🗂️",
     year: "2024",
+    image: "/assets/projects/freewrite.png",
   },
   {
     id: "project-two",
@@ -35,6 +38,7 @@ export const projects: Project[] = [
     github: "https://github.com",
     emoji: "📊",
     year: "2024",
+    image: "/assets/projects/freewrite.png",
   },
   {
     id: "project-three",
@@ -47,6 +51,7 @@ export const projects: Project[] = [
     github: "https://github.com",
     emoji: "⚡",
     year: "2023",
+    image: "/assets/projects/freewrite.png",
   },
   {
     id: "project-four",
@@ -60,6 +65,7 @@ export const projects: Project[] = [
     live: "https://example.com",
     emoji: "💰",
     year: "2023",
+    image: "/assets/projects/freewrite.png",
   },
   {
     id: "project-five",
@@ -72,5 +78,6 @@ export const projects: Project[] = [
     github: "https://github.com",
     emoji: "🤖",
     year: "2025",
+    image: "/assets/project-five.png",
   },
 ];
